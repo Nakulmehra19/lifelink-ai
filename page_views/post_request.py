@@ -105,7 +105,11 @@ with form_col:
             req_id = add_request(req)
             st.success(
                 f"✅ **Request posted successfully!** Request ID: `{req_id}`  \n"
-                "Go to **🔗 Find Matches** to see compatible donors instantly."
+                "Your request has been submitted and is awaiting admin approval."
+            )
+            st.info(
+                "🟡 **Your request is pending admin review.** "
+                "Once approved, it will appear in Find Matches for compatible donors."
             )
             if urgency == "Critical":
                 st.balloons()

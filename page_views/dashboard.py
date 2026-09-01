@@ -19,10 +19,10 @@ matches  = st.session_state.matches
 st.subheader("📈 Key Performance Indicators")
 k1, k2, k3, k4, k5, k6 = st.columns(6)
 k1.metric("Total Donors",       len(donors))
-k2.metric("Available",          sum(1 for d in donors   if d["status"] == "Available"))
+k2.metric("Verified Donors",    sum(1 for d in donors   if d.get("verification_status") == "Verified"))
 k3.metric("Pledged",            sum(1 for d in donors   if d["status"] == "Pledged"))
 k4.metric("Total Requests",     len(requests))
-k5.metric("Open Requests",      sum(1 for r in requests if r["status"] == "Open"))
+k5.metric("Approved Requests",  sum(1 for r in requests if r.get("verification_status") == "Approved"))
 k6.metric("Confirmed Matches",  len(matches))
 
 # ── Match success rate ────────────────────────────────────────────────────────

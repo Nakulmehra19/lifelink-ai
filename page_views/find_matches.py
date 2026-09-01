@@ -21,9 +21,24 @@ st.caption(
 st.divider()
 
 # ── Summary KPIs ──────────────────────────────────────────────────────────────
-open_requests = [r for r in st.session_state.requests if r["status"] == "Open"]
+# Only approved requests appear in the public matching view
+open_requests = [
+    r for r in st.session_state.requests
+    if r["status"] == "Open" and r.get("verification_status", "Approved") == "Approved"
+]
 all_requests  = st.session_state.requests
 critical_open = [r for r in open_requests if r.get("urgency") == "Critical"]
+
+# Pending-verification notice for the submitting user
+my_pending = [
+    r for r in st.session_state.requests
+    if r.get("verification_status") == "Pending"
+]
+if my_pending:
+    st.info(
+        f"🟡 **{len(my_pending)} request(s) are awaiting admin approval** and not yet visible here. "
+        "An admin must approve them before matching can begin."
+    )
 
 k1, k2, k3, k4 = st.columns(4)
 k1.metric("📋 Open Requests",    len(open_requests))

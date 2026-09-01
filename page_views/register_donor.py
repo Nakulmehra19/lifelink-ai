@@ -95,6 +95,10 @@ with form_col:
                 f"🎉 **Registration successful!** Your Donor ID is `{donor_id}`.  \n"
                 "Thank you for joining the LifeLink family. You may save up to **8 lives**!"
             )
+            st.info(
+                "🟡 **Your registration is pending admin verification.** "
+                "Once an admin approves your profile, you will become eligible for matching."
+            )
             st.balloons()
 
 with info_col:
@@ -142,9 +146,9 @@ st.subheader("📋 All Registered Donors")
 
 if st.session_state.donors:
     df = pd.DataFrame(st.session_state.donors)[
-        ["id", "name", "age", "blood_type", "city", "donation_type", "status", "registered_at"]
+        ["id", "name", "age", "blood_type", "city", "donation_type", "status", "verification_status", "registered_at"]
     ]
-    df.columns = ["ID", "Name", "Age", "Blood Type", "City", "Donation Type", "Status", "Registered At"]
+    df.columns = ["ID", "Name", "Age", "Blood Type", "City", "Donation Type", "Status", "Verification", "Registered At"]
     st.dataframe(df, use_container_width=True, hide_index=True)
 else:
     st.info("No donors registered yet. Be the first!")
