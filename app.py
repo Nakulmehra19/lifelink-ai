@@ -16,25 +16,26 @@ st.set_page_config(
 # ── Initialise session-state store ─────────────────────────────────────────
 init_store()
 
-# ── Sidebar navigation ─────────────────────────────────────────────────────
+# ── Sidebar ─────────────────────────────────────────────────────────────────
 st.sidebar.title("🩸 LifeLink")
 st.sidebar.caption("Blood & Organ Donation Platform")
-st.sidebar.markdown("---")
+st.sidebar.divider()
 
 PAGES = {
-    "🏠 Home":                  "pages/home.py",
-    "📋 Register as Donor":     "pages/register_donor.py",
-    "🚨 Post Urgent Request":   "pages/post_request.py",
-    "🔗 Find Matches":          "pages/find_matches.py",
-    "📊 Dashboard":             "pages/dashboard.py",
-    "🤖 AI Assistant":          "pages/ai_assistant.py",
-    "⚙️  Settings":             "pages/settings.py",
+    "🏠 Home":                  "page_views/home.py",
+    "📋 Register as Donor":     "page_views/register_donor.py",
+    "🚨 Post Urgent Request":   "page_views/post_request.py",
+    "🔗 Find Matches":          "page_views/find_matches.py",
+    "📊 Dashboard":             "page_views/dashboard.py",
+    "🤖 AI Assistant":          "page_views/ai_assistant.py",
+    "⚙️  Settings":             "page_views/settings.py",
 }
 
-# Use radio for page selection stored in session state
+# Navigation
 if "current_page" not in st.session_state:
     st.session_state.current_page = "🏠 Home"
 
+st.sidebar.caption("NAVIGATION")
 selected = st.sidebar.radio(
     "Navigate",
     list(PAGES.keys()),
@@ -43,21 +44,34 @@ selected = st.sidebar.radio(
 )
 st.session_state.current_page = selected
 
-# ── Live stats in sidebar ───────────────────────────────────────────────────
-st.sidebar.markdown("---")
-donors     = st.session_state.get("donors",   [])
-requests   = st.session_state.get("requests", [])
-matches    = st.session_state.get("matches",  [])
-avail      = sum(1 for d in donors  if d["status"] == "Available")
-open_reqs  = sum(1 for r in requests if r["status"] == "Open")
+# ── Live platform stats ─────────────────────────────────────────────────────
+st.sidebar.divider()
+st.sidebar.caption("LIVE STATS")
 
-col1, col2, col3 = st.sidebar.columns(3)
-col1.metric("Donors",   avail)
-col2.metric("Requests", open_reqs)
-col3.metric("Matched",  len(matches))
+donors   = st.session_state.get("donors",   [])
+requests = st.session_state.get("requests", [])
+matches  = st.session_state.get("matches",  [])
 
-st.sidebar.markdown("---")
-st.sidebar.caption("Powered by Gemini 3.6 Flash ✨")
+avail     = sum(1 for d in donors   if d["status"] == "Available")
+open_reqs = sum(1 for r in requests if r["status"] == "Open")
+critical  = sum(1 for r in requests if r.get("urgency") == "Critical" and r["status"] == "Open")
+
+col1, col2 = st.sidebar.columns(2)
+col1.metric("Donors",    avail)
+col2.metric("Requests",  open_reqs)
+
+col3, col4 = st.sidebar.columns(2)
+col3.metric("Matched",   len(matches))
+col4.metric("Critical",  critical)
+
+# API key status indicator
+st.sidebar.divider()
+if st.session_state.get("gemini_api_key", ""):
+    st.sidebar.success("🤖 AI Active", icon=None)
+else:
+    st.sidebar.info("⚙️ Add API key in Settings")
+
+st.sidebar.caption("Powered by Gemini 2.5 Flash ✨")
 
 # ── Route to selected page ──────────────────────────────────────────────────
 with open(PAGES[selected], encoding="utf-8") as _f:
