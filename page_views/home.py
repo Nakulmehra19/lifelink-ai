@@ -160,4 +160,4 @@ with right_col:
         )
 
 st.divider()
-st.caption("LifeLink © 2025 · Powered by Gemini 2.5 Flash · Every donation can save up to 8 lives 💙")
+st.caption("LifeLink © 2025 · Developed by Nakul Mehra · Every donation can save up to 8 lives 💙")

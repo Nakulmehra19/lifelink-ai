@@ -89,7 +89,7 @@ else:
 if st.session_state.get("admin_logged_in", False):
     st.sidebar.success("🛡️ Admin Logged In", icon=None)
 
-st.sidebar.caption("Powered by Gemini 2.5 Flash ✨")
+st.sidebar.caption("AI-Powered Donation Platform ✨")
 
 # ── Route to selected page ──────────────────────────────────────────────────
 with open(PAGES[selected], encoding="utf-8") as _f:
