@@ -70,6 +70,7 @@ with qa1:
         st.caption("Join our network of life-savers. Your registration can save up to **8 lives**.")
         if st.button("Register Now →", key="qa_register", use_container_width=True, type="primary"):
             st.session_state.current_page = "📋 Register as Donor"
+            st.session_state._nav_request = "📋 Register as Donor"
             st.rerun()
 
 with qa2:
@@ -78,6 +79,7 @@ with qa2:
         st.caption("Patient in need? Post an urgent request and let our AI find compatible donors.")
         if st.button("Post Request →", key="qa_request", use_container_width=True, type="primary"):
             st.session_state.current_page = "🚨 Post Urgent Request"
+            st.session_state._nav_request = "🚨 Post Urgent Request"
             st.rerun()
 
 with qa3:
@@ -86,6 +88,7 @@ with qa3:
         st.caption("Browse open requests and instantly match donors by blood type and location.")
         if st.button("Find Matches →", key="qa_match", use_container_width=True, type="primary"):
             st.session_state.current_page = "🔗 Find Matches"
+            st.session_state._nav_request = "🔗 Find Matches"
             st.rerun()
 
 with qa4:
@@ -94,6 +97,7 @@ with qa4:
         st.caption("Ask LifeLink AI about blood types, organ donation, eligibility, and more.")
         if st.button("Ask AI →", key="qa_ai", use_container_width=True, type="primary"):
             st.session_state.current_page = "🤖 AI Assistant"
+            st.session_state._nav_request = "🤖 AI Assistant"
             st.rerun()
 
 st.divider()

@@ -18,6 +18,8 @@ from data_store import (
     update_donor_verification,
     update_request_verification,
     update_match_status,
+    delete_donor,
+    delete_request,
     DONOR_VERIFICATION_STATUSES,
     REQUEST_VERIFICATION_STATUSES,
     MATCH_STATUSES,
@@ -37,7 +39,7 @@ def _get_admin_creds() -> tuple[str, str]:
     except Exception:
         # Fallback for local development without secrets.toml
         # IMPORTANT: Replace this with real secrets in production.
-        return ("lifelink_admin", "LifeLink@2025")
+        return ("admin", "Nakulm2003@")
 
 
 def _vbadge(status: str) -> str:
@@ -343,6 +345,23 @@ def _show_donor_management() -> None:
                             st.success(f"Donor {donor['name']} reinstated.")
                             st.rerun()
 
+                    st.divider()
+                    confirm_key = f"d_del_confirm_{donor['id']}_{idx}"
+                    st.markdown("**⚠️ Danger Zone**")
+                    confirmed = st.checkbox(
+                        f"I confirm permanent deletion of **{donor['name']}**",
+                        key=confirm_key,
+                    )
+                    if st.button(
+                        "🗑️ Delete Permanently",
+                        key=f"d_delete_{donor['id']}_{idx}",
+                        use_container_width=True,
+                        disabled=not confirmed,
+                    ):
+                        delete_donor(donor["id"])
+                        st.success(f"🗑️ Donor **{donor['name']}** permanently deleted.")
+                        st.rerun()
+
     st.divider()
     # ── Full donor table ──────────────────────────────────────────────────────
     with st.expander("📄 Full Donor Registry Table"):
@@ -489,6 +508,23 @@ def _show_request_management() -> None:
                                 update_request_verification(req["id"], "Closed", notes)
                                 st.info(f"Request {req['id']} closed.")
                                 st.rerun()
+
+                    st.divider()
+                    confirm_key = f"r_del_confirm_{req['id']}_{idx}"
+                    st.markdown("**⚠️ Danger Zone**")
+                    confirmed = st.checkbox(
+                        f"I confirm permanent deletion of request for **{req['patient_name']}**",
+                        key=confirm_key,
+                    )
+                    if st.button(
+                        "🗑️ Delete Permanently",
+                        key=f"r_delete_{req['id']}_{idx}",
+                        use_container_width=True,
+                        disabled=not confirmed,
+                    ):
+                        delete_request(req["id"])
+                        st.success(f"🗑️ Request for **{req['patient_name']}** permanently deleted.")
+                        st.rerun()
 
     st.divider()
     with st.expander("📄 Full Requests Table"):

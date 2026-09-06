@@ -33,21 +33,30 @@ PAGES = {
 }
 
 # Navigation
+# Initialise the navigation key only on the very first run.
+# Using the widget's own key= lets Streamlit own the value across reruns;
+# we never overwrite it with index= so a click is never lost.
+PAGE_KEYS = list(PAGES.keys())
 if "current_page" not in st.session_state:
     st.session_state.current_page = "🏠 Home"
 
-# Guard: ensure current_page is still a valid key (in case of hot-reload)
+# Guard: if a page button (e.g. Quick Action) wrote a page name that is valid,
+# keep it; otherwise fall back to Home.
 if st.session_state.current_page not in PAGES:
     st.session_state.current_page = "🏠 Home"
 
 st.sidebar.caption("NAVIGATION")
 selected = st.sidebar.radio(
     "Navigate",
-    list(PAGES.keys()),
-    index=list(PAGES.keys()).index(st.session_state.current_page),
+    PAGE_KEYS,
+    index=PAGE_KEYS.index(st.session_state.current_page),
+    key="_sidebar_nav",
     label_visibility="collapsed",
 )
-st.session_state.current_page = selected
+# Only update current_page when the radio actually changed.
+# This prevents init_store()'s Supabase calls from racing with the widget state.
+if selected != st.session_state.current_page:
+    st.session_state.current_page = selected
 
 # ── Live platform stats ─────────────────────────────────────────────────────
 st.sidebar.divider()
@@ -92,5 +101,7 @@ if st.session_state.get("admin_logged_in", False):
 st.sidebar.caption("AI-Powered Donation Platform ✨")
 
 # ── Route to selected page ──────────────────────────────────────────────────
-with open(PAGES[selected], encoding="utf-8") as _f:
+# Always route from current_page (the stable session-state value),
+# not from `selected` (which reflects the widget state this rerun only).
+with open(PAGES[st.session_state.current_page], encoding="utf-8") as _f:
     exec(_f.read(), {"__name__": "__main__"})

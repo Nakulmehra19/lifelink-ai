@@ -2,6 +2,7 @@
 Settings page — Gemini API key configuration and data management.
 """
 import streamlit as st
+from data_store import clear_donors, clear_requests, clear_matches, reset_all
 
 # ── Page header ───────────────────────────────────────────────────────────────
 st.title("⚙️ Settings")
@@ -71,7 +72,7 @@ with st.container(border=True):
             n_donors = len(st.session_state.donors)
             st.metric("Donors in Session", n_donors)
             if st.button("🗑️ Clear All Donors", use_container_width=True):
-                st.session_state.donors = []
+                clear_donors()
                 st.warning("All donors cleared.")
                 st.rerun()
 
@@ -80,7 +81,7 @@ with st.container(border=True):
             n_reqs = len(st.session_state.requests)
             st.metric("Requests in Session", n_reqs)
             if st.button("🗑️ Clear All Requests", use_container_width=True):
-                st.session_state.requests = []
+                clear_requests()
                 st.warning("All requests cleared.")
                 st.rerun()
 
@@ -89,7 +90,7 @@ with st.container(border=True):
             n_matches = len(st.session_state.matches)
             st.metric("Matches in Session", n_matches)
             if st.button("🗑️ Clear All Matches", use_container_width=True):
-                st.session_state.matches = []
+                clear_matches()
                 st.warning("All matches cleared.")
                 st.rerun()
 
@@ -103,10 +104,7 @@ with st.container(border=True):
     reset_col, _ = st.columns([2, 3])
     with reset_col:
         if st.button("🔄 Reset All Data to Seed State", type="secondary", use_container_width=True):
-            from data_store import _seed_donors, _seed_requests
-            st.session_state.donors       = _seed_donors()
-            st.session_state.requests     = _seed_requests()
-            st.session_state.matches      = []
+            reset_all()
             st.session_state.chat_history = []
             st.success("✅ Platform reset to seed state successfully.")
             st.rerun()
