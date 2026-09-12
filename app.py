@@ -33,9 +33,6 @@ PAGES = {
 }
 
 # Navigation
-# Initialise the navigation key only on the very first run.
-# Using the widget's own key= lets Streamlit own the value across reruns;
-# we never overwrite it with index= so a click is never lost.
 PAGE_KEYS = list(PAGES.keys())
 if "current_page" not in st.session_state:
     st.session_state.current_page = "🏠 Home"
@@ -45,6 +42,15 @@ if "current_page" not in st.session_state:
 if st.session_state.current_page not in PAGES:
     st.session_state.current_page = "🏠 Home"
 
+# Handle navigation requests from Quick Action buttons (or any in-page button).
+# These set _nav_request to the target page name; we sync the radio widget key
+# so the sidebar highlights the correct item and current_page is not overwritten.
+if "_nav_request" in st.session_state:
+    _target = st.session_state.pop("_nav_request")
+    if _target in PAGES:
+        st.session_state.current_page = _target
+        st.session_state["_sidebar_nav"] = _target
+
 st.sidebar.caption("NAVIGATION")
 selected = st.sidebar.radio(
     "Navigate",
@@ -53,8 +59,7 @@ selected = st.sidebar.radio(
     key="_sidebar_nav",
     label_visibility="collapsed",
 )
-# Only update current_page when the radio actually changed.
-# This prevents init_store()'s Supabase calls from racing with the widget state.
+# Only update current_page when the sidebar radio itself changed.
 if selected != st.session_state.current_page:
     st.session_state.current_page = selected
 
