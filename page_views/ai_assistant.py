@@ -23,6 +23,7 @@ if not api_key:
         )
         if st.button("⚙️ Go to Settings", type="primary"):
             st.session_state.current_page = "⚙️  Settings"
+            st.session_state._nav_request = "⚙️  Settings"
             st.rerun()
     st.stop()
 
